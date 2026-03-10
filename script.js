@@ -427,12 +427,20 @@ async function callGroq(data) {
     body:    JSON.stringify({ pdfData: data })
   });
 
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || 'Analysis failed');
+  // If response is not JSON, show the raw text to help debug
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    const raw = await response.text();
+    throw new Error(`Server returned non-JSON response: ${raw.substring(0, 200)}`);
   }
 
-  return response.json();
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.error || 'Analysis failed');
+  }
+
+  return json;
 }
 
 // ════════════════════════════════════════════
