@@ -3,7 +3,7 @@
 // Proxies Groq API so the key stays server-side
 // ============================================
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Always respond with JSON
   res.setHeader('Content-Type', 'application/json');
 
